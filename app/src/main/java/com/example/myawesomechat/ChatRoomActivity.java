@@ -49,6 +49,15 @@ public class ChatRoomActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(null ==  mFirebaseUser) {
+            finish();
+            return;
+        }
+    }
+
     private void initView() {
         messageRecyclerView = (RecyclerView) findViewById(R.id.message_recycler_view);
         // Initialize ProgressBar and RecyclerView.
