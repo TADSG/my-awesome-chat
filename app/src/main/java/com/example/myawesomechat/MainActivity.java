@@ -1,6 +1,7 @@
 package com.example.myawesomechat;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -66,11 +69,15 @@ public class MainActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         setupView();
+
+        //新增這段
+        fetchConfig();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.config_menu, menu);
         if (mFirebaseUser != null) {
             inflater.inflate(R.menu.sign_out_menu, menu);
         }
@@ -84,6 +91,9 @@ public class MainActivity extends BaseActivity {
                 mFirebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient);
                 setupView();
+                return true;
+            case R.id.fresh_config_menu:
+                fetchConfig();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -224,6 +234,45 @@ public class MainActivity extends BaseActivity {
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mLinearLayoutManager = new LinearLayoutManager(this);
         userRecyclerView.setLayoutManager(mLinearLayoutManager);
+    }
+
+    public void fetchConfig() {
+        long cacheExpiration = 3600; // 1 hour in seconds
+        // If developer mode is enabled reduce cacheExpiration to 0 so that
+        // each fetch goes to the server. This should not be used in release
+        // builds.
+        if (mFirebaseRemoteConfig.getInfo().getConfigSettings()
+                .isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+        mFirebaseRemoteConfig.fetch(cacheExpiration)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Make the fetched config available via
+                        // FirebaseRemoteConfig get<type> calls.
+                        mFirebaseRemoteConfig.activateFetched();
+                        applyTextColor();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // There has been an error fetching the config
+                        Log.w(TAG, "Error fetching config: " + e.getMessage());
+                    }
+                });
+    }
+
+    private void applyTextColor() {
+        TextView roomName = (TextView) findViewById(R.id.display_name);
+        String hexColor = mFirebaseRemoteConfig.getString(TITLE_COLOR_KEY);
+        try {
+
+            roomName.setTextColor(Color.parseColor(hexColor));
+        } catch(Exception e) {
+            Log.e(TAG, "Not a valid color:" + hexColor, e);
+        }
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
