@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'my-awesome-chat'
+            keyPassword '123456'
+            storeFile file('sample-key-pwd-123456.keystore')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "24.0.0"
-
     defaultConfig {
         applicationId "com.example.myawesomechat"
         minSdkVersion 15
