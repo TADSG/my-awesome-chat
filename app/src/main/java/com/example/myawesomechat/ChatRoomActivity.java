@@ -26,7 +26,7 @@ public class ChatRoomActivity extends BaseActivity {
     public final static String EXTRA_PREFIX = ChatRoomActivity.class.getName();
     public final static String EXTRA_ROOM_ID = EXTRA_PREFIX + ".ROOM_ID";
 
-    private String chatRoomId ;
+    private String chatRoomId;
 
     private RecyclerView messageRecyclerView;
 
@@ -54,7 +54,7 @@ public class ChatRoomActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        if(null ==  mFirebaseUser && !Room.PUBLIC_ROOM_ID.equals(chatRoomId)) {
+        if(null == mFirebaseUser && !Room.PUBLIC_ROOM_ID.equals(chatRoomId)) {
             finish();
             return;
         }
