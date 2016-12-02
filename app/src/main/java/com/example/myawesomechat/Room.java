@@ -6,6 +6,7 @@ import java.util.List;
 public class Room {
 
     public static final String CHILD_NAME = "rooms";
+    public static final String PUBLIC_ROOM_ID = "public_room_id";
 
     private List<Message> messages = new ArrayList<>();
 

@@ -36,7 +36,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String PUBLIC_ROOM_ID = "public_room_id";
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQ_SIGN_IN = 1001;
@@ -57,7 +56,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.public_room).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openChatRoom(PUBLIC_ROOM_ID);
+                openChatRoom(Room.PUBLIC_ROOM_ID);
             }
         });
 

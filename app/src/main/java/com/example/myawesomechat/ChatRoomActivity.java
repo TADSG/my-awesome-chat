@@ -26,6 +26,8 @@ public class ChatRoomActivity extends BaseActivity {
     public final static String EXTRA_PREFIX = ChatRoomActivity.class.getName();
     public final static String EXTRA_ROOM_ID = EXTRA_PREFIX + ".ROOM_ID";
 
+    private String chatRoomId ;
+
     private RecyclerView messageRecyclerView;
 
     private Button mSendButton;
@@ -42,7 +44,7 @@ public class ChatRoomActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
 
-        String chatRoomId = getIntent().getStringExtra(EXTRA_ROOM_ID);
+        chatRoomId = getIntent().getStringExtra(EXTRA_ROOM_ID);
         messagesReference = mFirebaseDatabaseReference.child(Room.CHILD_NAME).child(chatRoomId).child(Message.CHILD_NAME);
         Log.d(TAG, "Room ID:" + chatRoomId);
 
@@ -52,7 +54,7 @@ public class ChatRoomActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        if(null ==  mFirebaseUser) {
+        if(null ==  mFirebaseUser && !Room.PUBLIC_ROOM_ID.equals(chatRoomId)) {
             finish();
             return;
         }
